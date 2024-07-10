@@ -1,0 +1,32 @@
+# Exclude the Maven or Gradle build directory
+!target/
+build/
+
+# Exclude git repository files
+.git/
+.gitignore
+
+# Exclude logs and temporary files
+*.log
+*.tmp
+*.swp
+*~
+
+# Exclude IDE-specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.classpath
+*.project
+*.settings/
+
+# Exclude OS-specific files
+.DS_Store
+Thumbs.db
+
+# Exclude dependency directories
+.m2/
+.gradle/
+node_modules/
