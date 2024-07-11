@@ -87,6 +87,15 @@ public class AccountController implements AccountsApi {
     }
 
     @Override
+    public Mono<ResponseEntity<Flux<Account>>> getAccountsByCustomerId(String customerId, ServerWebExchange exchange) {
+        Flux<Account> creditsFlux = serviceFacade.getAccountService().findByCustomerId(customerId)
+                .map(serviceFacade.getAccountMapper()::toModel);
+
+        return Mono.just(ResponseEntity.ok(creditsFlux))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @Override
     public Mono<ResponseEntity<Flux<AverageDailyBalanceSummary>>> getAverageDailyBalance(String customerId, ServerWebExchange exchange) {
         Flux<AverageDailyBalanceSummary> creditsFlux = serviceFacade.getTransactionService().generateDailyBalanceSummary(customerId)
                 .map(serviceFacade.getDailyBalanceSummaryMapper()::toModel);
