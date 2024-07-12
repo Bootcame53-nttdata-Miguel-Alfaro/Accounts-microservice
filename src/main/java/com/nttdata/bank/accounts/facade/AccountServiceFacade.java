@@ -15,11 +15,14 @@ public class AccountServiceFacade {
     private final DepositMapper depositMapper;
     private final WithdrawMapper withdrawMapper;
     private final DailyBalanceSummaryMapper dailyBalanceSummaryMapper;
+    private final ValidateMapper validateMapper;
+    private final ValidateTypeMapper validateTypeMapper;
 
     public AccountServiceFacade(AccountService accountService, AccountMapper accountMapper,
                                 BalanceMapper balanceMapper, TransactionService transactionService,
                                 TransactionMapper transactionMapper, DepositMapper depositMapper,
-                                WithdrawMapper withdrawMapper, DailyBalanceSummaryMapper dailyBalanceSummaryMapper) {
+                                WithdrawMapper withdrawMapper, DailyBalanceSummaryMapper dailyBalanceSummaryMapper,
+                                ValidateMapper validateMapper, ValidateTypeMapper validateTypeMapper) {
         this.accountService = accountService;
         this.accountMapper = accountMapper;
         this.balanceMapper = balanceMapper;
@@ -28,5 +31,7 @@ public class AccountServiceFacade {
         this.depositMapper = depositMapper;
         this.withdrawMapper = withdrawMapper;
         this.dailyBalanceSummaryMapper = dailyBalanceSummaryMapper;
+        this.validateMapper = validateMapper;
+        this.validateTypeMapper = validateTypeMapper;
     }
 }

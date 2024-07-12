@@ -1,9 +1,6 @@
 package com.nttdata.bank.accounts.service.impl;
 
-import com.nttdata.bank.accounts.domain.Account;
-import com.nttdata.bank.accounts.domain.DailyBalanceSummary;
-import com.nttdata.bank.accounts.domain.Operation;
-import com.nttdata.bank.accounts.domain.Transaction;
+import com.nttdata.bank.accounts.domain.*;
 import com.nttdata.bank.accounts.repository.AccountRepository;
 import com.nttdata.bank.accounts.repository.TransactionRepository;
 import com.nttdata.bank.accounts.service.TransactionService;
@@ -120,6 +117,38 @@ public class TransactionServiceImpl implements TransactionService {
         return accountRepository.findByCustomerId(customerId)
                 .flatMap(account -> calculateAverageDailyBalance(account, startOfMonth, endOfMonth));
     }
+
+    @Override
+    public Mono<ValidateResponse> validateBalance(String accountId, Mono<ValidateRequest> operationMono) {
+        return operationMono
+                .flatMap(operation -> accountRepository.findById(accountId)
+                        .switchIfEmpty(Mono.error(new AccountNotFoundException(accountId)))
+                        .flatMap(account -> transactionRepository.findByAccountId(accountId).count()
+                                .map(transactionCount -> {
+                                    double amount = operation.getBalance();
+                                    String type = operation.getType();
+
+                            if ("deposit".equalsIgnoreCase(type)) {
+                                if (amount <= CHARGE_AMOUNT) {
+                                    return new ValidateResponse("The deposit cannot be less than " + CHARGE_AMOUNT + " soles", false);
+                                }
+                                return new ValidateResponse("Deposit validation successful", true);
+                            } else if ("withdraw".equalsIgnoreCase(type)) {
+                                if (account.getBalance() < amount) {
+                                    return new ValidateResponse("Insufficient funds", false);
+                                }
+                                if (transactionCount >= account.getMovementLimit() && amount + CHARGE_AMOUNT > account.getBalance()) {
+                                    return new ValidateResponse("Insufficient funds for withdrawal with commission", false);
+                                }
+                                return new ValidateResponse("Withdrawal validation successful", true);
+                            } else {
+                                return new ValidateResponse("Invalid operation type", false);
+                            }
+                         })
+                      )
+            );
+    }
+
 
     private Flux<DailyBalanceSummary> calculateAverageDailyBalance(Account account, LocalDate startOfMonth, LocalDate endOfMonth) {
         // Convertir las fechas de inicio y fin del mes a objetos Date

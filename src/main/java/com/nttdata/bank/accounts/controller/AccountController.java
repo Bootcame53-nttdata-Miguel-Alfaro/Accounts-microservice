@@ -103,4 +103,11 @@ public class AccountController implements AccountsApi {
         return Mono.just(ResponseEntity.ok(creditsFlux))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    @Override
+    public Mono<ResponseEntity<Validate>> sufficientBalanceToAccount(String id, Mono<ValidationType> validationType, ServerWebExchange exchange) {
+        return serviceFacade.getTransactionService().validateBalance(id, validationType.map(serviceFacade.getValidateTypeMapper()::toDomain))
+                .map(serviceFacade.getValidateMapper()::toModel)
+                .map(c -> ResponseEntity.status(HttpStatus.CREATED).body(c));
+    }
 }

@@ -178,6 +178,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Transaction'
+  /accounts/{id}/balance/validate:
+    post:
+      tags:
+        - transaction
+      summary: Validate sufficient balance
+      description: Validate sufficient balance to account
+      operationId: sufficientBalanceToAccount
+      parameters:
+        - name: id
+          in: path
+          description: ID of account to validate sufficient balance
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Sufficient balance details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationType'
+        required: true
+      responses:
+        "200":
+          description: Sufficient balance successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Validate'
   /accounts/{id}/withdraw:
     post:
       tags:
@@ -409,3 +437,26 @@ components:
           description: Average daily balance for the current month
       xml:
         name: averageDailyBalanceSummary
+    Validate:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status
+        sufficientBalance:
+          type: boolean
+          description: If there is sufficient balance for a payment
+      xml:
+        name: validate
+    ValidationType:
+      type: object
+      properties:
+        type:
+          type: string
+          description: (deposit, withdrawal)
+        balance:
+          type: number
+          format: double
+          description: If there is sufficient balance for a payment
+      xml:
+        name: validate

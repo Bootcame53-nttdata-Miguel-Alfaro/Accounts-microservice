@@ -14,8 +14,9 @@ public class AccountConfiguration {
     public AccountServiceFacade accountServiceFacade(AccountService accountService, AccountMapper accountMapper,
                                                      BalanceMapper balanceMapper, TransactionService transactionService,
                                                      TransactionMapper transactionMapper, DepositMapper depositMapper,
-                                                     WithdrawMapper withdrawMapper, DailyBalanceSummaryMapper dailyBalanceSummaryMapper) {
+                                                     WithdrawMapper withdrawMapper, DailyBalanceSummaryMapper dailyBalanceSummaryMapper,
+                                                     ValidateMapper validateMapper, ValidateTypeMapper validateTypeMapper) {
         return new AccountServiceFacade(accountService, accountMapper, balanceMapper, transactionService,
-                transactionMapper, depositMapper, withdrawMapper, dailyBalanceSummaryMapper);
+                transactionMapper, depositMapper, withdrawMapper, dailyBalanceSummaryMapper,validateMapper, validateTypeMapper);
     }
 }
